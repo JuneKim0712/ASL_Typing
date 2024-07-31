@@ -3,13 +3,13 @@ const fallingLettersDiv = document.getElementById('fallingLetters');
 const scoreDisplay = document.getElementById('score');
 let fallingLetters = [];
 let score = 0;
-let fallSpeed = 50; // Initial falling speed
+let fallSpeed = 100; // Initial falling speed
 let gameInterval = 1000; // Initial interval for creating letters
-let fallInterval = 1; // Initial interval for updating letters
+let fallInterval = 100; // Initial interval for updating letters
 let fallSpeedIncreaseInterval = 5000; // Time in ms to increase fall speed
 let lastSpeedIncreaseTime = Date.now();
 let usedLetters = new Set(); // Track used letters
-const redLetterProbability = 0.1; // 10% probability of a red letter
+const redLetterProbability = 1; // 10% probability of a red letter
 
 function getRandomLetter() {
     let letter;
