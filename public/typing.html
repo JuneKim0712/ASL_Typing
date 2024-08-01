@@ -9,9 +9,15 @@
 <body>
     <div id="gameContainer">
         <div id="fallingLetters"></div>
+        <div id="predicted"></div>
         <div id="score">Score: 0</div>
+        <div id="gameOverOverlay" style="display: none;">
+            <p id="finalScore">Your Score: 0</p>
+            <p id="highScore">High Score: 0</p>
+            <button id="playAgainButton">Play Again</button>
+        </div>
     </div>
-    <video id="webcam" style="position: abso" autoplay playsinline></video>
+    <video id="webcam" autoplay playsinline></video>
     <script src="https://cdn.jsdelivr.net/npm/onnxjs/dist/onnx.min.js"></script>
     <script type="module" src="typing.js"></script>
 </body>

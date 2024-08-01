@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+
 body {
     margin: 0;
     padding: 0;
@@ -18,24 +20,83 @@ body {
 }
 
 #fallingLetters {
+    font-family: "Pixelify Sans";
     position: absolute;
     width: 100%;
     height: 100%;
     pointer-events: none;
 }
 
-#score {
+#predicted, #score {
     position: absolute;
-    top: 20px;
-    right: 20px;
     font-size: 24px;
     color: white;
 }
 
-.fallingLetter {
-    transition: top 0.05s linear;
+#predicted {
+    top: 20px;
+    left: 20px;
 }
+
+#score {
+    top: 20px;
+    right: 20px;
+}
+
+
+.fallingLetter {
+    transition: top 0.01s linear;
+}
+
 
 .redLetter {
     color: red;
+}
+
+.hitEffect {
+    animation: hitAnimation 0.3s ease;
+}
+
+@keyframes hitAnimation {
+    0% {
+        transform: scale(1);
+        color: inherit;
+    }
+    50% {
+        transform: scale(1.5);
+        color: yellow;
+    }
+    100% {
+        transform: scale(1);
+        color: inherit;
+    }
+}
+
+#gameOverOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 36px;
+    display: none; /* Initially hidden */
+}
+
+#gameOverOverlay h1, #gameOverOverlay p, #gameOverOverlay button {
+    margin: 10px;
+}
+
+#gameOverOverlay button {
+    font-size: 24px;
+    padding: 10px 20px;
+    cursor: pointer;
+    background: #61dafb;
+    border: none;
+    border-radius: 5px;
 }
