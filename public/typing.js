@@ -1,15 +1,86 @@
+import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
+
+let handLandmarker;
+let runningMode = "VIDEO";
+const alphabet = 'abcdefghiklmnopqrstuvwxy';
+const sess = new onnx.InferenceSession();
+const model = sess.loadModel('new2_model.onnx');
+
+
+const predictAlphabet = async (landmarks) => {
+    if (landmarks != undefined) {
+      console.log(landmarks);
+      const flattenedLandmarks = landmarks.flatMap(landmark => [landmark.x, landmark.y, landmark.z]);
+      console.log(flattenedLandmarks);
+      const tensor = new onnx.Tensor(new Float32Array(flattenedLandmarks), "float32", [1, 63]);
+      console.log(tensor);
+      const results = await sess.run([tensor]);
+      console.log(results)
+      const outputTensor = results.values().next().value;
+      const probabilities = outputTensor.data;
+
+  const maxIndex = probabilities.indexOf(Math.max(...probabilities));
+  const predictedAlphabet = alphabet[maxIndex];
+  
+  console.log(`Predicted alphabet: ${predictedAlphabet}, Probability: ${probabilities[maxIndex]}`);
+    }
+
+};
+
+const createHandLandmarker = async () => {
+  const vision = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+  );
+  handLandmarker = await HandLandmarker.createFromOptions(vision, {
+    baseOptions: {
+      modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
+      delegate: "GPU"
+    },
+    runningMode: runningMode,
+    numHands: 2
+  });
+  startWebcam();
+};
+
+createHandLandmarker();
+
+const startWebcam = () => {``
+  const video = document.getElementById("webcam");
+
+  const constraints = { video: true };
+  navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+    video.srcObject = stream;
+    video.addEventListener("loadeddata", predictWebcam);
+  });
+};
+
+const predictWebcam = () => {
+  const video = document.getElementById("webcam");
+  const processFrame = async () => {
+    if (handLandmarker) {
+      const results = await handLandmarker.detectForVideo(video, performance.now());
+      if (results.landmarks) {
+        await predictAlphabet(results.landmarks[0]);
+      }
+      requestAnimationFrame(processFrame);
+    }
+  };
+  processFrame();
+};
+
+
 const letters = 'abcdefghiklmnpqrstuvwxy'; // Exclude 'j' and 'z'
 const fallingLettersDiv = document.getElementById('fallingLetters');
 const scoreDisplay = document.getElementById('score');
 let fallingLetters = [];
 let score = 0;
-let fallSpeed = 100; // Initial falling speed
+let fallSpeed = 10; // Initial falling speed
 let gameInterval = 1000; // Initial interval for creating letters
-let fallInterval = 100; // Initial interval for updating letters
-let fallSpeedIncreaseInterval = 5000; // Time in ms to increase fall speed
+let fallInterval = 0.1; // Initial interval for updating letters
+let fallSpeedIncreaseInterval = 500; // Time in ms to increase fall speed
 let lastSpeedIncreaseTime = Date.now();
 let usedLetters = new Set(); // Track used letters
-const redLetterProbability = 1; // 10% probability of a red letter
+const redLetterProbability = 0.1; // 10% probability of a red letter
 
 function getRandomLetter() {
     let letter;

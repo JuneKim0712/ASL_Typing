@@ -1,0 +1,30 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 50px;
+}
+#word {
+    font-size: 36px; /* Larger font size for the word */
+    margin-bottom: 20px;
+}
+#letters {
+    font-size: 24px; /* Larger font size for guessed letters */
+    margin-bottom: 20px;
+}
+#message {
+    font-size: 28px; /* Larger font size for messages */
+    margin-bottom: 20px;
+    color: red;
+}
+#attempts {
+    font-size: 24px; /* Larger font size for attempts left */
+}
+#guess {
+    font-size: 24px; /* Larger font size for input */
+    width: 50px;
+    text-align: center;
+}
+button {
+    font-size: 24px; /* Larger font size for button */
+    padding: 10px 20px;
+}

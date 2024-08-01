@@ -3,31 +3,26 @@ import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@m
 let handLandmarker;
 let runningMode = "VIDEO";
 const alphabet = 'abcdefghiklmnopqrstuvwxy';
-let model;
-let sess;
+const sess = new onnx.InferenceSession();
+const model = sess.loadModel('new2_model.onnx');
 
-const loadModel = async() => {
-    sess = new onnx.InferenceSession();
-    model = await sess.loadModel('hand_keypoints_model.onnx');
-};
 
 const predictAlphabet = async (landmarks) => {
     if (landmarks != undefined) {
-
+      console.log(landmarks);
       const flattenedLandmarks = landmarks.flatMap(landmark => [landmark.x, landmark.y, landmark.z]);
-      console.log(flattenedLandmarks)
-        const tensor = new onnx.Tensor(new Float32Array(flattenedLandmarks), "float32");
-        console.log(tensor);
+      console.log(flattenedLandmarks);
+      const tensor = new onnx.Tensor(new Float32Array(flattenedLandmarks), "float32", [1, 63]);
+      console.log(tensor);
+      const results = await sess.run([tensor]);
+      console.log(results)
+      const outputTensor = results.values().next().value;
+      const probabilities = outputTensor.data;
 
-  const results = await sess.run(tensor);
-  console.log(results)
-  //const outputTensor = results.values().next().value;
-  //const probabilities = outputTensor.data;
-
-  //const maxIndex = probabilities.indexOf(Math.max(...probabilities));
-  //const predictedAlphabet = alphabet[maxIndex];
+  const maxIndex = probabilities.indexOf(Math.max(...probabilities));
+  const predictedAlphabet = alphabet[maxIndex];
   
-  //console.log(`Predicted alphabet: ${predictedAlphabet}, Probability: ${probabilities[maxIndex]}`);
+  console.log(`Predicted alphabet: ${predictedAlphabet}, Probability: ${probabilities[maxIndex]}`);
     }
 
 };
@@ -44,13 +39,12 @@ const createHandLandmarker = async () => {
     runningMode: runningMode,
     numHands: 2
   });
-  await loadModel();
   startWebcam();
 };
 
 createHandLandmarker();
 
-const startWebcam = () => {
+const startWebcam = () => {``
   const video = document.getElementById("webcam");
 
   const constraints = { video: true };
