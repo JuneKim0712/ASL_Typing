@@ -1,4 +1,4 @@
-# [ASL typing](https://www.asltyping.web.app)
+# [ASL typing](asltyping.web.app)
 ---
 This project uses mediapipe hand landmark and onnx web runtime
 
